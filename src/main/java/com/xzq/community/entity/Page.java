@@ -68,10 +68,10 @@ public class Page {
      * @return
      */
     public int getTotal() {
-        // rows / limit [+1]
-        if (rows % limit == 0) {
+
+        if (rows % limit == 0) {//如果整除，返回的就是页数
             return rows / limit;
-        } else {
+        } else {//不然需要+1
             return rows / limit + 1;
         }
     }

@@ -1,9 +1,13 @@
 package com.xzq.community;
 
 import com.xzq.community.dao.DiscussPostMapper;
+import com.xzq.community.dao.LoginTicketMapper;
+import com.xzq.community.dao.MessageMapper;
 import com.xzq.community.dao.UserMapper;
 
 import com.xzq.community.entity.DiscussPost;
+import com.xzq.community.entity.LoginTicket;
+import com.xzq.community.entity.Message;
 import com.xzq.community.entity.User;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -11,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
-
 import java.util.Date;
 import java.util.List;
 
@@ -24,6 +27,10 @@ public class MapperTests {
     private UserMapper userMapper;
     @Autowired
     private DiscussPostMapper discussPostMapper;
+    @Autowired
+    private LoginTicketMapper loginTicketMapper;
+    @Autowired
+    private MessageMapper messageMapper;
 
     @Test
     public void testSelectUser(){
@@ -69,6 +76,47 @@ public class MapperTests {
 
         int rows = discussPostMapper.selectDiscussPostRows(149);
         System.out.println(rows);
+    }
+    @Test
+    public void testInsertLoginTicket() {
+        LoginTicket loginTicket = new LoginTicket();
+        loginTicket.setUserId(101);
+        loginTicket.setTicket("abc");
+        loginTicket.setStatus(0);
+        loginTicket.setExpired(new Date(System.currentTimeMillis() + 1000 * 60 * 10));
+
+        loginTicketMapper.insertLoginTicket(loginTicket);
+    }
+    @Test
+    public void testSelectLoginTicket() {
+        LoginTicket loginTicket = loginTicketMapper.selectByTicket("abc");
+        System.out.println(loginTicket);
+
+        loginTicketMapper.updateStatus("abc", 1);
+        loginTicket = loginTicketMapper.selectByTicket("abc");
+        System.out.println(loginTicket);
+    }
+    @Test
+    public void testInsertPost(){
+        DiscussPost discussPost = new DiscussPost(666,1,"哈哈","嘻嘻",1,0,new Date(),2,2);
+        int i = discussPostMapper.insertDiscussPost(discussPost);
+        System.out.println(i);
+    }
+    @Test
+    public void testSelectLetters(){
+        List<Message> messages = messageMapper.selectConversations(111, 0, 20);
+        for (Message message:messages){
+            System.out.println(message);
+        }
+        int i = messageMapper.selectConversationCount(111);
+        System.out.println(i);
+
+        messages = messageMapper.selectLetters("111_112", 0, 10);
+        int i1 = messageMapper.selectLetterCount("111_112");
+        System.out.println(i1);
+
+        int i2 = messageMapper.selectLetterUnreadCount(131, "111_131");
+        System.out.println(i2);
     }
 
 }
